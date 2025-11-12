@@ -9,4 +9,14 @@ export class AppController {
   getHello(): string {
     return this.appService.getHello();
   }
+
+  @Get('heavy')
+  async getHeavy() {
+    const result = await this.appService.heavyComputation()
+    console.log('result', result)
+
+    return {
+      data: 'ok'
+    }
+  }
 }
