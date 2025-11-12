@@ -15,7 +15,7 @@ if (parentPort) {
       );
 
       const address = '0x' + hash.slice(-40);
-      if (address.toLowerCase().endsWith('de4d')) {
+      if (address.toLowerCase().endsWith('d3ad')) {
         console.log(`✓ Found salt: ${i}`);
         console.log(`✓ Address: ${address}`);
         parentPort?.postMessage({ salt: i })
