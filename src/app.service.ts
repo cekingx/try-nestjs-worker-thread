@@ -35,7 +35,9 @@ export class AppService {
         workers.push(worker)
         promises.push(promise)
       }
-      result = await Promise.race(promises)
+      result = await Promise.any(promises)
+    } catch (error) {
+      console.log('promise error', error)
     } finally {
       await this.terminate(workers)
     }

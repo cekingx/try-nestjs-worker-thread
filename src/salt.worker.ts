@@ -22,6 +22,6 @@ if (parentPort) {
       }
     }
     console.log(`doing ${data.max / data.workerNumber} loop from offset ${data.offset}`)
-    parentPort?.postMessage(new Error('Not Found'))
+    throw new Error('Not Found')
   })
 }
