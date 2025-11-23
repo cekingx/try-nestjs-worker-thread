@@ -18,10 +18,20 @@ if (parentPort) {
       if (address.toLowerCase().endsWith('d3ad')) {
         console.log(`✓ Found salt: ${i}`);
         console.log(`✓ Address: ${address}`);
-        parentPort?.postMessage({ salt: i })
+        parentPort?.postMessage({
+          isSuccess: true,
+          data: {
+            salt: i,
+            address: address
+          }
+        })
+        return;
       }
     }
     console.log(`doing ${data.max / data.workerNumber} loop from offset ${data.offset}`)
-    throw new Error('Not Found')
+    parentPort?.postMessage({
+      isSuccess: false,
+      error: { message: 'Not Found' }
+    })
   })
 }

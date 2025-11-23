@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { Worker } from 'worker_threads';
 import { join } from 'path';
+import { WorkerResp } from './class/worker-message';
 
 export class Message {
   workerNumber: number;
@@ -49,7 +50,13 @@ export class AppService {
   spawn(msg: Message): SpawnWorker {
     const worker = new Worker(join(process.cwd(), 'dist', 'salt.worker.js'))
     const promise =  new Promise((resolve, reject) => {
-      worker.once('message', resolve)
+      worker.once('message', (msg: WorkerResp) => {
+        if (msg.isSuccess) {
+          resolve(msg)
+        } else {
+          reject(msg)
+        }
+      })
       worker.once('error', reject)
       worker.once('exit', (code) => {
         console.log(`worker ${msg.offset} exit`)
@@ -65,9 +72,11 @@ export class AppService {
   }
 
   async terminate(workers: Worker[]) {
-    for (const worker of workers) {
-      worker.removeAllListeners()
-      await worker.terminate()
-    }
+    await Promise.all(
+      workers.map(async (worker) => {
+        worker.removeAllListeners()
+        await worker.terminate()
+      })
+    )
   }
 }
